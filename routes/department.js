@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const controller = require('../controllers/DepartmentController');
+const UserController = require("../controllers/UserController");
+router.post('/', UserController.verifyToken, controller.createDepartment);
+router.get('/', UserController.verifyToken, controller.getAllDepartments);
+router.get('/:id', UserController.verifyToken, controller.getDepartmentById);
+router.put('/:id', UserController.verifyToken, controller.updateDepartment);
+router.delete('/:id', UserController.verifyToken, controller.deleteDepartment);
+module.exports = router;

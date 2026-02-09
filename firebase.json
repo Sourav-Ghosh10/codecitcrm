@@ -1,0 +1,15 @@
+{
+    "functions": {
+        "source": ".",
+        "codebase": "default",
+        "ignore": [
+            "node_modules",
+            ".git",
+            "firebase-debug.log",
+            "*.js.map",
+            "create-sourav-user.js",
+            "migrate-db.js",
+            "verify-*.js"
+        ]
+    }
+}
