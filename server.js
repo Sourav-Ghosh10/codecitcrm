@@ -44,7 +44,7 @@ app.use(cors({
 }));
 
 // Enable pre-flight request for all routes
-app.options('*', cors());
+app.options(/.*/, cors());
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
