@@ -28,22 +28,31 @@ const rosterRoutes = require("./routes/roster");
 const salaryDeductionRule = require("./routes/salaryDeductionRules");
 const eodReportRoutes = require("./routes/eodReports");
 
-const allowedOrigins = ['https://nrnsttech.online', 'http://localhost:5000', 'http://localhost:3000'];
+const allowedOrigins = [
+  'https://nrnsttech.online',
+  'https://www.nrnsttech.online',
+  'http://localhost:3000',
+  'http://localhost:5000'
+];
+
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+  origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1 && !origin.endsWith('.vercel.app')) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
     }
-    return callback(null, true);
+
+    return callback(null, false);
   },
   credentials: true,
-  optionsSuccessStatus: 200
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Enable pre-flight request for all routes
 app.options(/.*/, cors());
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
