@@ -40,6 +40,23 @@ app.options(/.*/, (req, res) => {
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Middleware to ensure DB is connected (Critical for Vercel/Serverless)
+app.use(async (req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+  if (mongoose.connection.readyState === 1) {
+    return next();
+  }
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("Database connection failed during request:", err);
+    res.status(500).json({ error: "Database connection failed" });
+  }
+});
+
 app.use("/api/V1/auth", userRoutes);
 app.use("/api/V1/attendance", attendanceRoutes);
 app.use("/api/V1/menu", menuRoutes);
