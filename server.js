@@ -42,11 +42,19 @@ app.use(cors({
   credentials: true,
   optionsSuccessStatus: 200
 }));
+
+// Enable pre-flight request for all routes
+app.options('*', cors());
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middleware to ensure DB is connected
 app.use(async (req, res, next) => {
+  // Skip DB connection check for OPTIONS requests (CORS preflight)
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+
   if (mongoose.connection.readyState !== 1) {
     try {
       await connectDB();
