@@ -66,24 +66,43 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use("/api/V1/auth", userRoutes);
-app.use("/api/V1/attendance", attendanceRoutes);
-app.use("/api/V1/menu", menuRoutes);
-app.use("/api/V1/role", roleRoutes);
-app.use("/api/V1/employee", employeeRoutes);
-app.use("/api/V1/departments", departmentRoutes);
-app.use("/api/V1/designations", designationRoutes);
-app.use("/api/V1/holidays", holidayRoutes);
-app.use("/api/V1/leave", leaveRoutes);
-app.use("/api/V1/assignments", assignmentRoutes);
-app.use("/api/V1/events", eventRoutes);
-app.use("/api/V1/company", CompanyRoutes);
-app.use("/api/V1/countries", CountryRoutes);
-app.use("/api/V1/notices", noticeRoutes);
-app.use("/api/V1/payrolls", payrollRoutes);
-app.use("/api/V1/eod-reports", eodReportRoutes);
-app.use("/api/V1/roster", rosterRoutes);
-app.use("/api/V1/salary-deductions", salaryDeductionRule);
+console.log('Loading auth routes...');
+try { app.use("/api/V1/auth", userRoutes); } catch (e) { console.error('FAILED auth routes', e); }
+console.log('Loading attendance routes...');
+try { app.use("/api/V1/attendance", attendanceRoutes); } catch (e) { console.error('FAILED attendance routes', e); }
+console.log('Loading menu routes...');
+try { app.use("/api/V1/menu", menuRoutes); } catch (e) { console.error('FAILED menu routes', e); }
+console.log('Loading role routes...');
+try { app.use("/api/V1/role", roleRoutes); } catch (e) { console.error('FAILED role routes', e); }
+console.log('Loading employee routes...');
+try { app.use("/api/V1/employee", employeeRoutes); } catch (e) { console.error('FAILED employee routes', e); }
+console.log('Loading department routes...');
+try { app.use("/api/V1/departments", departmentRoutes); } catch (e) { console.error('FAILED department routes', e); }
+console.log('Loading designation routes...');
+try { app.use("/api/V1/designations", designationRoutes); } catch (e) { console.error('FAILED designation routes', e); }
+console.log('Loading holiday routes...');
+try { app.use("/api/V1/holidays", holidayRoutes); } catch (e) { console.error('FAILED holiday routes', e); }
+console.log('Loading leave routes...');
+try { app.use("/api/V1/leave", leaveRoutes); } catch (e) { console.error('FAILED leave routes', e); }
+console.log('Loading assignment routes...');
+try { app.use("/api/V1/assignments", assignmentRoutes); } catch (e) { console.error('FAILED assignment routes', e); }
+console.log('Loading event routes...');
+try { app.use("/api/V1/events", eventRoutes); } catch (e) { console.error('FAILED event routes', e); }
+console.log('Loading company routes...');
+try { app.use("/api/V1/company", CompanyRoutes); } catch (e) { console.error('FAILED company routes', e); }
+console.log('Loading country routes...');
+try { app.use("/api/V1/countries", CountryRoutes); } catch (e) { console.error('FAILED country routes', e); }
+console.log('Loading notice routes...');
+try { app.use("/api/V1/notices", noticeRoutes); } catch (e) { console.error('FAILED notice routes', e); }
+console.log('Loading payroll routes...');
+try { app.use("/api/V1/payrolls", payrollRoutes); } catch (e) { console.error('FAILED payroll routes', e); }
+console.log('Loading eod routes...');
+try { app.use("/api/V1/eod-reports", eodReportRoutes); } catch (e) { console.error('FAILED eod routes', e); }
+console.log('Loading roster routes...');
+try { app.use("/api/V1/roster", rosterRoutes); } catch (e) { console.error('FAILED roster routes', e); }
+console.log('Loading salary deduction routes...');
+try { app.use("/api/V1/salary-deductions", salaryDeductionRule); } catch (e) { console.error('FAILED salary deduction routes', e); }
+
 
 
 const PORT = process.env.PORT || 5000;
