@@ -28,7 +28,20 @@ const rosterRoutes = require("./routes/roster");
 const salaryDeductionRule = require("./routes/salaryDeductionRules");
 const eodReportRoutes = require("./routes/eodReports");
 
-app.use(cors());
+const allowedOrigins = ['https://nrnsttech.online', 'http://localhost:5000', 'http://localhost:3000'];
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1 && !origin.endsWith('.vercel.app')) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
