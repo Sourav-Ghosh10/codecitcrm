@@ -45,15 +45,16 @@ app.use(async (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return next();
   }
-  if (mongoose.connection.readyState === 1) {
-    return next();
-  }
+
   try {
     await connectDB();
     next();
   } catch (err) {
-    console.error("Database connection failed during request:", err);
-    res.status(500).json({ error: "Database connection failed" });
+    console.error("Database connection failed during request:", err.message);
+    return res.status(503).json({
+      error: "Database connection failed",
+      message: err.message
+    });
   }
 });
 
@@ -78,19 +79,43 @@ app.use("/api/V1/salary-deductions", salaryDeductionRule);
 
 
 const PORT = process.env.PORT || 5000;
+let connectionPromise = null;
+
 const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB Connected");
-  } catch (err) {
-    console.error("MongoDB connection error:", err.message);
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
   }
+
+  if (connectionPromise) {
+    return connectionPromise;
+  }
+
+  console.log("Connecting to MongoDB...");
+  connectionPromise = mongoose.connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000,
+    connectTimeoutMS: 10000,
+  }).then(conn => {
+    console.log("MongoDB Connected Successfully");
+    connectionPromise = null; // Reset promise so it can reconnect if connection drops later
+    return conn;
+  }).catch(err => {
+    console.error("MongoDB connection error details:", err.message);
+    connectionPromise = null; // Reset on error so we can try again
+    throw err;
+  });
+
+  return connectionPromise;
 };
 
 if (require.main === module) {
-  connectDB().then(() => {
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  });
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    })
+    .catch((err) => {
+      console.error("Initial MongoDB connection failed. Server will still start but DB operations will fail until connection is established.");
+      app.listen(PORT, () => console.log(`Server running on port ${PORT} (Waiting for DB...)`));
+    });
 }
 
 module.exports = app;
